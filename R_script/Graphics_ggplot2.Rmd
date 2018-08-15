@@ -4,3 +4,6 @@ author: "SKP"
 date: "15 August 2018"
 output: html_document
 ---
+# Learning ggplot2
+
+We're learning ggplot2 It's going to be amazing.
