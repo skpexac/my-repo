@@ -12,6 +12,30 @@ We're learning ggplot2 It's going to be amazing.
 ###from CRAN:
 ```{r}
 #install.packages("tidyverse")
+library(tidyverse)
+
+x <- mpg
+?mpg
+
+#define aesthetics (aes), by selecting the variables to be plotted and the
+#variables to define the presentation such as plotting size, shape color, etc.
+
+#add geoms - graphical representation of the data in the plot (points, lines, bars). ggplot2 offers many different geoms; we will use some common ones today, including:
+
+    #geom_point() for scatter plots, dot plots, etc.
+    #geom_bar() for bar charts
+    #geom_line() for trend lines, time-series, etc
+
+
+ggplot(data=mpg,aes(x=displ,y=hwy)) + geom_point()
+
+#OR
+
+# Assign plot to a variable
+car_plot <- ggplot(data = mpg, aes(x = displ, y = hwy))
+
+# Draw the plot
+car_plot + geom_point()
 
 ```
 
