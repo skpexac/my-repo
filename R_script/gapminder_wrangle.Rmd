@@ -11,7 +11,80 @@ output: html_document
 ```{r}
 #install.packages("tidyverse")
 library(tidyverse)
+#Tidy data has a simple convention: put variables in the columns and observations in the rows
 
-#Tidy data has a simple convention: put variables in the columns and observations in the rows.
+gapminder <- readr::read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder.csv")
+
+#Let's use head and tail:
+
+head(gapminder) # shows first 6
+tail(gapminder) # shows last 6
+
+head(gapminder, 10) # shows first X that you indicate
+tail(gapminder, 12) # guess what this does!
+
+str(gapminder)
+#summary(gapminder)
+
+names(gapminder)
+dim(gapminder)
+
+ncol(gapminder)
+nrow(gapminder)
+
+c(nrow(gapminder), ncol(gapminder))
+
+summary(gapminder)
+
+library(skimr)  #install.packages('skimr')
+skim(gapminder)
+
+gapminder$lifeExp # very long! hard to make sense of...
+head(gapminder$lifeExp) # can do the same tests we tried before
+str(gapminder$lifeExp) # it is a single numeric vector
+summary(gapminder$lifeExp) # same information, just formatted slightly differently
+
+#OK, so let's start wrangling with dplyr.
+#There are five dplyr functions that you will use to do the vast majority of data manipulations:
+
+filter() #pick observations by their values
+select() #pick variables by their names
+mutate() #create new variables with functions of existing variables
+summarise() #collapse many values down to a single summary
+arrange() #reorder the rows
+
+#These can all be used in conjunction with 
+group_by() 
+#which changes the scope of each function from operating on the entire dataset to operating on it group-by-group. These six functions provide the verbs for a language of data manipulation.
+
+#All verbs work similarly:
+
+    #The first argument is a data frame.
+    #The subsequent arguments describe what to do with the data frame. You can refer to columns in the data frame directly without using $.
+    #The result is a new data frame.
+
+#Together these properties make it easy to chain together multiple simple steps to achieve a complex result.
+
+#examples
+
+#subset rows
+filter(gapminder, lifeExp < 29)
+filter(gapminder, country == "Mexico")
+
+#How about if we want two country names? We can't use the == operator here, because it can only operate on one thing at a time. We will use the %in% operator:
+
+mp <- filter(gapminder, country %in% c("Mexico", "Peru"))
+
+filter(gapminder, country == "Mexico", year == 2002)
+
+sw1 <- filter(gapminder, country == "Sweden")  
+mean(sw1$lifeExp)  
+#or
+sw2 <- mean((filter(gapminder,country=="Sweden"))$lifeExp)
+
+#subset variable (columns)
+select(gapminder, year, lifeExp) 
+#We can also use - to deselect columns
+select(gapminder, -continent, -lifeExp) # you can use - to deselect columns
 
 ```
