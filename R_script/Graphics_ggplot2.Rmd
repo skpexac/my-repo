@@ -188,14 +188,17 @@ ggplot(data = mpg, aes(x = displ, y = hwy)) +
   theme_bw() +
   theme(text=element_text(size = 16))
   
-  ggsave("C:\\Folders\\Projects\\test.jpg",my_plot,width=15,height=10)
-  
-  ?geom_bar
+  #ggsave("C:\\Folders\\Projects\\test.jpg",my_plot,width=15,height=10)
+
 ```
 
-##text
+##6 Data wrangling
 
 ```{r}
+#install.packages("tidyverse")
+library(tidyverse)
+
+#Tidy data has a simple convention: put variables in the columns and observations in the rows.
 
 ```
 

@@ -1,0 +1,17 @@
+---
+title: "gapminder-wrangle"
+author: "SKP"
+date: "21 August 2018"
+output: html_document
+---
+
+
+##6 Data wrangling
+
+```{r}
+#install.packages("tidyverse")
+library(tidyverse)
+
+#Tidy data has a simple convention: put variables in the columns and observations in the rows.
+
+```
