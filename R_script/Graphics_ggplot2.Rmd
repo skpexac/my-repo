@@ -14,8 +14,8 @@ We're learning ggplot2 It's going to be amazing.
 #install.packages("tidyverse")
 library(tidyverse)
 
-x <- mpg
-?mpg
+#x <- mpg
+#?mpg
 
 #define aesthetics (aes), by selecting the variables to be plotted and the
 #variables to define the presentation such as plotting size, shape color, etc.
@@ -27,7 +27,8 @@ x <- mpg
     #geom_line() for trend lines, time-series, etc
 
 
-ggplot(data=mpg,aes(x=displ,y=hwy)) + geom_point()
+ggplot(data=mpg,aes(x=displ,y=hwy)) +
+  geom_point()
 
 #OR
 
@@ -35,9 +36,24 @@ ggplot(data=mpg,aes(x=displ,y=hwy)) + geom_point()
 car_plot <- ggplot(data = mpg, aes(x = displ, y = hwy))
 
 # Draw the plot
-car_plot + geom_point()
+car_plot + 
+  geom_point()
 
-#from here
+#add transparency
+ggplot(data = mpg, aes(x = displ, y = hwy)) +
+    geom_point(alpha = 0.4)
+
+#map class to colour
+ggplot(data = mpg, aes(x = displ, y = hwy)) +
+    geom_point(aes(color = class))
+
+#map class to shape
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, shape = class))
+
+#Make a scatterplot of hwy vs cty with different size points representing each car class and different colors for each fuel type.
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = cty, y = hwy, size = class, color = fl))
 
 ```
 
