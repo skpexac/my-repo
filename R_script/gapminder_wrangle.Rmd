@@ -195,4 +195,46 @@ gapminder %>%
   filter(lifeExp == max(lifeExp)) %>%
   arrange(year)
 
+
+#AND IN BASE R
+
+## gapminder-wrangle.R --- baseR
+## J. Lowndes lowndes@nceas.ucsb.edu
+
+gapminder <- read.csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder.csv', stringsAsFactors = FALSE) 
+x1  <- gapminder[ , c('country', 'year', 'pop', 'gdpPercap') ]# subset columns
+mex <- x1[x1$country == "Mexico", ] # subset rows
+mex$gdp <- mex$pop * mex$gdpPercap # add new columns
+mex$max_gdp <- max(mex$gdp)
+
+
+#joining data
+
+## read in the data. (same URL as yesterday, just with co2.csv instead of gapminder.csv)
+co2 <- read_csv("https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/co2.csv")
+
+## explore
+co2 %>% head()
+co2 %>% dim() # 12
+
+## create new variable that is only 2007 data
+gap_2007 <- gapminder %>%
+  filter(year == 2007) 
+gap_2007 %>% dim() # 142  
+
+## left_join gap_2007 to co2
+lj <- left_join(gap_2007, co2, by = "country")
+
+## explore
+lj %>% dim() #142
+lj %>% summary() # lots of NAs in the co2_2017 columm
+lj %>% View() 
+
+## right_join gap_2007 and co2
+rj <- right_join(gap_2007, co2, by = "country")
+
+## explore
+rj %>% dim() # 12
+rj %>% summary()
+rj %>% View() 
 ```
