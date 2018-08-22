@@ -47,14 +47,14 @@ summary(gapminder$lifeExp) # same information, just formatted slightly different
 #OK, so let's start wrangling with dplyr.
 #There are five dplyr functions that you will use to do the vast majority of data manipulations:
 
-filter() #pick observations by their values
-select() #pick variables by their names
-mutate() #create new variables with functions of existing variables
-summarise() #collapse many values down to a single summary
-arrange() #reorder the rows
+#filter() #pick observations by their values
+#select() #pick variables by their names
+#mutate() #create new variables with functions of existing variables
+#summarise() #collapse many values down to a single summary
+#arrange() #reorder the rows
 
 #These can all be used in conjunction with 
-group_by() 
+#group_by() 
 #which changes the scope of each function from operating on the entire dataset to operating on it group-by-group. These six functions provide the verbs for a language of data manipulation.
 
 #All verbs work similarly:
@@ -67,7 +67,8 @@ group_by()
 
 #examples
 
-#subset rows
+#SUBSET ROWS - FILTER
+
 filter(gapminder, lifeExp < 29)
 filter(gapminder, country == "Mexico")
 
@@ -82,9 +83,116 @@ mean(sw1$lifeExp)
 #or
 sw2 <- mean((filter(gapminder,country=="Sweden"))$lifeExp)
 
-#subset variable (columns)
+#SUBSET VARABLES (columns) -SELECT
+
 select(gapminder, year, lifeExp) 
 #We can also use - to deselect columns
 select(gapminder, -continent, -lifeExp) # you can use - to deselect columns
+
+
+#use select and filter together
+gap_cambodia  <- filter(gapminder, country == "Cambodia")
+gap_cambodia2 <- select(gap_cambodia, -continent, -lifeExp) 
+
+gap_cambodia3 <- select(filter(gapminder, country == "Cambodia"), -continent, -lifeExp)
+
+#PIPE OPERATOR
+
+#%>% #control + shift + m
+  
+gapminder %>% head()
+
+## instead of this...
+gap_cambodia  <- filter(gapminder, country == "Cambodia")
+gap_cambodia2 <- select(gap_cambodia, -continent, -lifeExp) 
+
+## ...we can do this
+gap_cambodia  <- gapminder %>% filter(country == "Cambodia")
+gap_cambodia2 <- gap_cambodia %>% select(-continent, -lifeExp) 
+
+#and then chain together
+gap_cambodia3 <- gapminder %>% filter(country == "Cambodia") %>% select(-continent, -lifeExp) 
+
+#Let's write it again but using multiple lines so it's nicer to read.
+
+gap_cambodia  <- gapminder %>% 
+  filter(country == "Cambodia") %>%
+  select(-continent, -lifeExp) 
+
+#"Take the gapminder data, and then
+#filter for Cambodia, and then
+#deselect the variables continent and lifeExp."
+
+#MAKE NEW VARIABLE
+
+#mutate - adds new variables
+#add an index column
+gapminder %>% 
+  mutate(index = 1:nrow(gapminder))
+#assigne to original data
+gapminder <- gapminder %>% 
+  mutate(index = 1:nrow(gapminder))
+#OK, let's do another example. Imagine we wanted to recover each country's GDP. After all, the Gapminder data has a variable for population and GDP per capita.
+
+gapminder %>%
+  mutate(gdp = pop * gdpPercap)
+
+gapminder %>%
+  select(-continent, -lifeExp) %>%
+  filter(country == "Egypt") %>%
+  mutate(gdp = pop * gdpPercap) %>%
+  mutate(max_gdp = max(gdp))
+
+## you can also create multiple variables within the same mutate(), and line them up so they are easier to read:
+gapminder %>%
+  select(-continent, -lifeExp) %>%
+  filter(country == "Vietnam") %>% 
+  mutate(gdp     = pop * gdpPercap,
+         max_gdp = max(gdp))
+
+#GROUP DATA
+
+gapminder %>%
+  group_by(country) %>%
+  mutate(gdp     = pop * gdpPercap,
+         max_gdp = max(gdp)) %>%
+  ungroup()
+
+gapminder %>%
+  group_by(country) %>%
+  mutate(gdp     = pop * gdpPercap,
+         max_gdp = max(gdp)) %>%
+  ungroup() %>% 
+  tail(30)
+
+#SUMARISE DATA
+
+gapminder %>%
+  group_by(country) %>%
+  mutate(gdp = pop * gdpPercap) %>%
+  summarize(max_gdp = max(gdp)) %>%
+  ungroup()
+
+#ORDER COLUMNS - ARRANGE()
+
+gapminder %>%
+  group_by(country) %>%
+  mutate(gdp = pop * gdpPercap) %>%
+  summarize(max_gdp = max(gdp)) %>%
+  ungroup() %>%
+  arrange(max_gdp)
+
+m2 <- gapminder %>%
+  group_by(country) %>%
+  mutate(gdp = pop * gdpPercap) %>%
+  summarize(max_gdp = max(gdp)) %>%
+  ungroup() %>%
+  arrange(desc(max_gdp))
+
+gapminder %>%
+  filter(continent == 'Asia') %>%
+  group_by(country) %>%
+  filter(lifeExp == max(lifeExp)) %>%
+  arrange(year)
 
 ```
