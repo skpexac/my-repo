@@ -1,0 +1,73 @@
+---
+title: "tidyr"
+author: "SKP"
+date: "22 August 2018"
+output: html_document
+---
+
+## Data wrangling with `tidyr`, which is part of the tidyverse. We are going to tidy some data!
+```{r}
+library(tidyverse)
+
+## wide format
+gap_wide <- readr::read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder_wide.csv')
+
+## yesterday's format
+gapminder <- readr::read_csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder.csv')
+
+## load tidyr (in tidyverse)
+library(tidyverse) # install.packages("tidyverse")
+
+## load wide data
+gap_wide <- read.csv('https://raw.githubusercontent.com/OHI-Science/data-science-training/master/data/gapminder_wide.csv')
+
+head(gap_wide)
+str(gap_wide)
+
+## practice tidyr::gather() wide to long
+gap_long <- gap_wide %>% 
+  gather(key   = obstype_year,
+         value = obs_values,
+         -continent, -country) 
+# or 
+gap_long <- gap_wide %>% 
+  gather(key   = obstype_year,
+         value = obs_values,
+         dplyr::starts_with('pop'),
+         dplyr::starts_with('lifeExp'),
+         dplyr::starts_with('gdpPercap'))
+
+## gather() and separate() to create our original gapminder
+gap_long <- gap_wide %>% 
+  gather(key   = obstype_year,
+         value = obs_values,
+         -continent, -country) %>%
+  separate(obstype_year,
+           into = c('obs_type','year'),
+           sep="_")
+
+## practice: can still do calculations in long format
+gap_long %>% 
+  group_by(continent, obs_type) %>%
+  summarize(means = mean(obs_values))
+
+## spread() from normal to wide
+gap_normal <- gap_long %>% 
+  spread(obs_type, obs_values) %>%
+  select(country, continent, year, lifeExp, pop, gdpPercap)
+
+## check that all.equal()
+all.equal(gap_normal,gapminder)
+
+## unite() and spread(): convert gap_long to gap_wide
+head(gap_long) # remember the columns
+
+gap_wide_new <- gap_long %>% 
+  # first unite obs_type and year into a new column called var_names. Separate by _
+  unite(col = var_names, obs_type, year, sep = "_") %>% 
+  # then spread var_names out by key-value pair.
+  spread(key = var_names, value = obs_values)
+str(gap_wide_new)
+```
+## Text
+
